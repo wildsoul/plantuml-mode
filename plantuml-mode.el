@@ -1,5 +1,4 @@
 ;; plantuml-mode.el -- Major mode for plantuml
-
 ;; Author: Zhang Weize (zwz)
 ;; Keywords: uml ascii
 
@@ -33,12 +32,9 @@
   "Major mode for editing plantuml file."
   :group 'languages)
 
-(defvar plantuml-jar-path (expand-file-name "~/plantuml.jar"))
-
+(defvar plantuml-jar-path nil )
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
-
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
-
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
 
 ;;; syntax table
@@ -108,11 +104,10 @@
 
 (unless plantuml-kwdList
   (plantuml-init)
-  (defvar plantuml-types-regexp (concat "^\\s *\\(" (regexp-opt plantuml-types 'words) "\\|\\<\\(note\\s +over\\|note\\s +\\(left\\|right\\|bottom\\|top\\)\\s +\\(of\\)?\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\\s +\\(header\\|footer\\)\\)\\>\\)"))
-  (defvar plantuml-keywords-regexp (concat "^\\s *" (regexp-opt plantuml-keywords 'words)  "\\|\\(<\\|<|\\|\\*\\|o\\)\\(\\.+\\|-+\\)\\|\\(\\.+\\|-+\\)\\(>\\||>\\|\\*\\|o\\)\\|\\.\\{2,\\}\\|-\\{2,\\}"))
+  (defvar plantuml-types-regexp (concat "^\\s *\\(" (regexp-opt plantuml-types 'words) "\\|\\<\\(note\\s +over\\|note\\s +\\(left\\|right\\|bottom\\|top\\)\\s +\\(of\\)?\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\\s +\\(header\\|footer\\)\\)\\>\\)"))  
+(defvar plantuml-keywords-regexp (concat "^\\s *" (regexp-opt plantuml-keywords 'words)"\\|\\(?:\\*\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\)\\|-\\(?:-\\(?:<|\\||>\\|[*<>o]\\)\\|down-\\(?:<|\\||>\\|[*<>o]\\)\\|left-\\(?:<|\\||>\\|[*<>o]\\)\\|right-\\(?:<|\\||>\\|[*<>o]\\)\\|up-\\(?:<|\\||>\\|[*<>o]\\)\\)\\|\\.\\(?:\\.\\(?:<|\\||>\\|[*<>o]\\)\\|down\\.\\(?:<|\\||>\\|[*<>o]\\)\\|left\\.\\(?:<|\\||>\\|[*<>o]\\)\\|right\\.\\(?:<|\\||>\\|[*<>o]\\)\\|up\\.\\(?:<|\\||>\\|[*<>o]\\)\\)\\|<\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\||\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\)\\)\\|>\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\)\\|o\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\)\\||>\\(?:-\\(?:\\(?:down\\|left\\|right\\|up\\)?-\\)\\|\\.\\(?:\\(?:down\\|left\\|right\\|up\\)?\\.\\)\\)\\)"))
   (defvar plantuml-builtins-regexp (regexp-opt plantuml-builtins 'words))
   (defvar plantuml-preprocessors-regexp (concat "^\\s *" (regexp-opt plantuml-preprocessors 'words)))
-
   (setq plantuml-font-lock-keywords
         `(
           (,plantuml-types-regexp . font-lock-type-face)
@@ -128,7 +123,7 @@
   (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-builtins)
   (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-preprocessors)
   (put 'plantuml-kwdList 'risky-local-variable t)
-
+  
   ;; clear memory
   (setq plantuml-types nil)
   (setq plantuml-keywords nil)
