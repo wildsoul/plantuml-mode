@@ -246,7 +246,7 @@
                                       plantuml-preprocessors)))
      (symbol . "s"))))
 (defun ac-plantuml-setup ()
-  "Add the nrepl completion source to the front of `ac-sources'.
+  "Add ac completion source to the front of `ac-sources'.
 This affects only the current buffer."
   (interactive)
   (add-to-list 'ac-sources 'ac-source-plantuml-sources))
