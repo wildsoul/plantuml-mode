@@ -1,13 +1,15 @@
-;; plantuml-mode.el -- Major mode for plantuml
+;;; plantuml-mode.el --- Major mode for plantuml
+
 ;; Author: Zhang Weize (zwz), wildsoul
-;; Keywords: uml ascii
+;; Keywords: uml, ascii
+;; Package-Requires: ((auto-complete "1.4"))
 ;; 
 ;; You can redistribute this program and/or modify it under the terms
 ;; of the GNU General Public License as published by the Free Software
 ;; Foundation; either version 2, or (at your option) any later
 ;; version.
 
-;;; DESCRIPTION
+;;; Commentary:
 
 ;; A major mode for plantuml, see: http://plantuml.sourceforge.net/
 ;; Plantuml is an open-source tool in java that allows to quickly write :
@@ -30,6 +32,7 @@
 ;;                         instead of the hard-coded way.
 ;; version 0.1, 2010-08-25 First version
 
+;;; Code:
 
 (require 'thingatpt)
 (require 'auto-complete)
@@ -279,3 +282,4 @@ Shortcuts             Command Name
 
 
 (provide 'plantuml-mode)
+;;; plantuml-mode.el ends here
