@@ -36,8 +36,8 @@
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
-(defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\)")
-(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\)")
+(defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\)")
+(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)")
 (defvar plantuml-indent-offset 2)
 
 ;;; syntax table
@@ -193,7 +193,9 @@
                     (setq cur-indent (+ (current-indentation)
                                         plantuml-indent-offset)
                           not-indented nil))
-                
+                (if (looking-at plantuml-indent-regexp-end)
+                    (setq cur-indent (current-indentation)
+                          not-indented nil))
                 (if (bobp)
                     (setq not-indented nil)))))))
       (if cur-indent

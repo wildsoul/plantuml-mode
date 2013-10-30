@@ -1,8 +1,9 @@
-* README 
+* README
   + update regexp 
-  + add indent 
+  + add indent     
+    
 ** TODO-LIST
-  + plantuml-mode-line-indentation
-  + fixbugs for plantuml indentation 
+  + +plantuml-line-indent+
+  +fixbugs for plantuml indentation 
 
 
