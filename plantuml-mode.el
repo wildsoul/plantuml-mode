@@ -36,6 +36,9 @@
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
+(defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\)")
+(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\)")
+(defvar plantuml-indent-offset 2)
 
 ;;; syntax table
 (defvar plantuml-mode-syntax-table
@@ -104,7 +107,8 @@
 
 (unless plantuml-kwdList
   (plantuml-init)
-  (defvar plantuml-types-regexp (concat "^\\s *\\(" (regexp-opt plantuml-types 'words) "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\\s +\\(header\\|footer\\)\\)\\>\\)"))
+  (defvar plantuml-types-regexp (concat "^\\s *\\(" (regexp-opt plantuml-types 'words) "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)"))
+  
   
   (defvar plantuml-keywords-regexp (concat "^\\s *" (regexp-opt plantuml-keywords 'words) "\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)"))
 
@@ -162,13 +166,45 @@
 
 (add-to-list 'auto-mode-alist '("\\.plu$" . plantuml-mode))
 
+(defun plantuml-indent-line ()
+  "Indent current line as plantuml code"
+  (interactive)
+  (beginning-of-line)
+  (if (bobp)
+      (indent-line-to 0)
+    (let ((not-indented t) cur-indent) 
+      (if (looking-at plantuml-indent-regexp-end)
+          (progn
+            (save-excursion
+              (forward-line -1)
+              (if (looking-at plantuml-indent-regexp-start)
+                  (setq cur-indent (current-indentation))
+                (setq cur-indent(- (current-indentation)
+                                   plantuml-indent-offset))))
+            (if (< cur-indent 0)
+                (setq cur-indent 0)))
+        (save-excursion 
+          (while not-indented
+            (forward-line -1)
+            (if (looking-at "^\s*$")
+                (setq not-indented t)
+              (progn 
+                (if (looking-at plantuml-indent-regexp-start) 
+                    (setq cur-indent (+ (current-indentation)
+                                        plantuml-indent-offset)
+                          not-indented nil))
+                
+                (if (bobp)
+                    (setq not-indented nil)))))))
+      (if cur-indent
+          (indent-line-to cur-indent)
+        (indent-line-to 0)))))  
+
 ;;;###autoload
 (defun plantuml-mode ()
   "Major mode for plantuml.
-
 Shortcuts             Command Name
 \\[plantuml-complete-symbol]      `plantuml-complete-symbol'"
-
   (interactive)
   (kill-all-local-variables)
 
@@ -179,8 +215,20 @@ Shortcuts             Command Name
   (use-local-map plantuml-mode-map)
 
   (make-local-variable 'font-lock-defaults)
+  (setq-local indent-line-function 'plantuml-indent-line)
   (setq font-lock-defaults '((plantuml-font-lock-keywords) nil t))
-
   (run-mode-hooks 'plantuml-mode-hook))
+
+
+
+
+
+
+
+  
+
+
+
+
 
 (provide 'plantuml-mode)
