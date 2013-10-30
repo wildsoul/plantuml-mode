@@ -9,14 +9,14 @@
 ;;         wildsoul
 ;; Maintainer: wildsoul
 ;; Version: 0.3
-;; Package-Requires: ((auto-complete "1.4.0"))
+;; Package-Requires: ((auto-complete "1.4"))
 ;; URL: https://github.com/wildsoul/plantuml-mode
 ;; Keywords: uml, ascii
 ;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
 ;;
 ;; A major mode for plantuml, see: http://plantuml.sourceforge.net/
 ;; Plantuml is an open-source tool in java that allows to quickly write :
@@ -316,7 +316,4 @@ Shortcuts             Command Name
 
 
 (provide 'plantuml-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; plantuml-mode.el ends here
