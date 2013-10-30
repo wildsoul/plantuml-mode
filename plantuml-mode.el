@@ -1,7 +1,7 @@
 ;; plantuml-mode.el -- Major mode for plantuml
-;; Author: Zhang Weize (zwz)
+;; Author: Zhang Weize (zwz), wildsoul
 ;; Keywords: uml ascii
-
+;; 
 ;; You can redistribute this program and/or modify it under the terms
 ;; of the GNU General Public License as published by the Free Software
 ;; Foundation; either version 2, or (at your option) any later
@@ -21,6 +21,10 @@
 ;; using a simple and intuitive language.
 
 ;;; HISTORY
+;; version 0.3 <2013-10-30 08:36:24> by wildsoul
+;;  +  update regexp
+;;  +  add indent 
+;;
 ;; version 0.2, 2010-09-20 Initialize the keywords from the -language output of plantuml.jar
 ;;                         instead of the hard-coded way.
 ;; version 0.1, 2010-08-25 First version
