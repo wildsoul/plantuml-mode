@@ -120,26 +120,11 @@
           (,plantuml-types-regexp . font-lock-type-face)
           (,plantuml-keywords-regexp . font-lock-keyword-face)
           (,plantuml-builtins-regexp . font-lock-builtin-face)
-          (,plantuml-preprocessors-regexp . font-lock-preprocessor-face)
-          ;; note: order matters
-          ))
-
+          (,plantuml-preprocessors-regexp . font-lock-preprocessor-face)))
   (setq plantuml-kwdList (make-hash-table :test 'equal))
-  (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-types)
-  (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-keywords)
-  (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-builtins)
-  (mapc (lambda (x) (puthash x t plantuml-kwdList)) plantuml-preprocessors)
-  (put 'plantuml-kwdList 'risky-local-variable t)
-  
-  ;; clear memory
-  (setq plantuml-types nil)
-  (setq plantuml-keywords nil)
-  (setq plantuml-builtins nil)
-  (setq plantuml-preprocessors nil)
-  (setq plantuml-types-regexp nil)
-  (setq plantuml-keywords-regexp nil)
-  (setq plantuml-builtins-regexp nil)
-  (setq plantuml-preprocessors-regexp nil))
+  (mapc (lambda (x) (puthash x t plantuml-kwdList))
+       (append plantuml-types plantuml-keywords plantuml-builtins plantuml-preprocessors))
+  (put 'plantuml-kwdList 'risky-local-variable t))
 
 (defun plantuml-complete-symbol ()
   "Perform keyword completion on word before cursor."
@@ -195,16 +180,20 @@
                 ((looking-at plantuml-indent-regexp-end)
                     (setq cur-indent (current-indentation)
                           not-indented nil))
-                ((> (setq var-indent (string-match
-                                      (progn (string-match
-                                              plantuml-indent-regexp-arrow-1
-                                              (current-line-string))
-                                             (match-string-no-properties
-                                              0
-                                              (current-line-string)))
-                                   (current-line-string))) 0)
-                 (setq cur-indent var-indent
-                       not-indented nil))
+                (((progn (forward-line 1)
+                         (looking-at plantuml-indent-regexp-arrow)))
+                 (progn (forward-line -1)
+                  (cond
+                   ((> (setq var-indent (string-match
+                                         (progn (string-match
+                                                 plantuml-indent-regexp-arrow-1
+                                                 (current-line-string))
+                                                (match-string-no-properties
+                                                 0
+                                                 (current-line-string)))
+                                         (current-line-string))) 0)
+                     (setq cur-indent var-indent
+                           not-indented nil)))))
                 ((bobp) (setq not-indented nil))))))
       (if cur-indent
           (indent-line-to cur-indent)
