@@ -37,10 +37,12 @@
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
 (defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\)")
-(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)")
-(defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)")
-(defvar plantuml-indent-regexp-arrow-1 "\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)")
-(setq plantuml-indent-offset 4)
+(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|\"]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)")
+(defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
+(defvar plantuml-indent-regexp-arrow-1 "\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
+(defvar plantuml-indent-regexp-arrow-2 "^\s*.+\s+\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
+(defvar plantuml-indent-offset 4)
+
 
 ;;; syntax table
 (defvar plantuml-mode-syntax-table
@@ -57,6 +59,7 @@
 (defvar plantuml-keywords nil)
 (defvar plantuml-preprocessors nil)
 (defvar plantuml-builtins nil)
+
 
 ;; keyword completion
 (defvar plantuml-kwdList nil "plantuml keywords.")
@@ -180,24 +183,48 @@
                 ((looking-at plantuml-indent-regexp-end)
                     (setq cur-indent (current-indentation)
                           not-indented nil))
-                (((progn (forward-line 1)
-                         (looking-at plantuml-indent-regexp-arrow)))
-                 (progn (forward-line -1)
-                  (cond
-                   ((> (setq var-indent (string-match
-                                         (progn (string-match
-                                                 plantuml-indent-regexp-arrow-1
-                                                 (current-line-string))
-                                                (match-string-no-properties
-                                                 0
-                                                 (current-line-string)))
-                                         (current-line-string))) 0)
-                     (setq cur-indent var-indent
-                           not-indented nil)))))
+                ((progn (forward-line 1)
+                        (setq var-indent
+                              (looking-at plantuml-indent-regexp-arrow))
+                        (forward-line -1)
+                        var-indent)
+                 (cond
+                  ((> (setq var-indent
+                            (string-match
+                             (progn (string-match
+                                     plantuml-indent-regexp-arrow-1
+                                     (current-line-string))
+                                    (match-string-no-properties
+                                     0
+                                     (current-line-string)))
+                             (current-line-string))) 0)
+                   (setq cur-indent  var-indent 
+                         not-indented nil))))
+                ((progn (forward-line 1)
+                        (setq var-indent
+                              (looking-at plantuml-indent-regexp-arrow-2))
+                        (forward-line -1)
+                        var-indent)
+                 (cond
+                  ('t
+                    (let ((var-count 0) (var-flag t))
+                      (while var-flag
+                        (incf var-count)
+                        (forward-line -1)
+                        (cond ((bobp) (setq flag nil))
+                              ((looking-at plantuml-indent-regexp-arrow) nil)
+                              ((looking-at "^\s+$") nil)
+                              ((looking-at plantuml-indent-regexp-end) nil)
+                              ((looking-at plantuml-indent-regexp-start) nil)
+                              ('t (setq cur-indent (current-indentation)
+                                         not-indented nil
+                                         var-flag nil))))
+                        (forward-line var-count)))))
                 ((bobp) (setq not-indented nil))))))
       (if cur-indent
           (indent-line-to cur-indent)
         (indent-line-to 0)))))
+
 
 
 ;;;###autoload
