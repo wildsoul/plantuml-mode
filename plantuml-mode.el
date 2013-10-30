@@ -1,17 +1,17 @@
 ;;; plantuml-mode.el --- Major mode for plantuml
-;;; -*- coding: utf-8 -*-
+
+;; Copyright (C) 2013 wildsoul
+;; Copyright (C) 2012 Zhang Weize (zwz)
+
 ;; Filename: plantuml-mode.el
 ;; Description: This is a major mode for plantuml
 ;; Author: Zhang Weize (zwz)
 ;;         wildsoul
 ;; Maintainer: wildsoul
-;; Copyright (C) 2010-2013 wildsoul
 ;; Version: 0.3
-;; Package-Requires: ((auto-complete))
+;; Package-Requires: ((auto-complete "1.4.0"))
 ;; URL: https://github.com/wildsoul/plantuml-mode
 ;; Keywords: uml, ascii
-;; Compatibility: 
-;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
