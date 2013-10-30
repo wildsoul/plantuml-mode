@@ -1,9 +1,13 @@
 * README
-  + update regexp 
+  integrating this project to my org-mode sounds good, i do not need to open either ida or eclipse. (thanks goodness)
+  but the problem is that i wrote some big uml graph with more than hundred lines， it become different to figure out problems， and handle``if'' and ``endif'' loop is another troublesome topic， when i have many ``if'' and ``endif''， i always find that i can not figure out where i am 。 so i upgrade this program for those people who has the similar exp. by the way thanks for zwz's work :)
+  
+  + fix regexp 
+  + append keywords
   + add indent     
+    support if, endif, note, end note
     
 ** TODO-LIST
   + +plantuml-line-indent+
-  +fixbugs for plantuml indentation 
-
-
+  + +fixbugs for plantuml indentation+
+    

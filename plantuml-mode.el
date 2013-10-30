@@ -38,7 +38,9 @@
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
 (defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\)")
 (defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:[()*a-zA-Z0-9-><.|]*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)")
-(defvar plantuml-indent-offset 2)
+(defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)")
+(defvar plantuml-indent-regexp-arrow-1 "\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)")
+(setq plantuml-indent-offset 4)
 
 ;;; syntax table
 (defvar plantuml-mode-syntax-table
@@ -60,7 +62,6 @@
 (defvar plantuml-kwdList nil "plantuml keywords.")
 
 ;;; font-lock
-
 (defun plantuml-init ()
   "Initialize the keywords or builtins from the cmdline language output"
   (unless (file-exists-p plantuml-jar-path)
@@ -172,7 +173,7 @@
   (beginning-of-line)
   (if (bobp)
       (indent-line-to 0)
-    (let ((not-indented t) cur-indent) 
+    (let ((not-indented t) cur-indent var-indent) 
       (if (looking-at plantuml-indent-regexp-end)
           (progn
             (save-excursion
@@ -186,21 +187,29 @@
         (save-excursion 
           (while not-indented
             (forward-line -1)
-            (if (looking-at "^\s*$")
-                (setq not-indented t)
-              (progn 
-                (if (looking-at plantuml-indent-regexp-start) 
+              (cond 
+                ((looking-at plantuml-indent-regexp-start) 
                     (setq cur-indent (+ (current-indentation)
                                         plantuml-indent-offset)
                           not-indented nil))
-                (if (looking-at plantuml-indent-regexp-end)
+                ((looking-at plantuml-indent-regexp-end)
                     (setq cur-indent (current-indentation)
                           not-indented nil))
-                (if (bobp)
-                    (setq not-indented nil)))))))
+                ((> (setq var-indent (string-match
+                                      (progn (string-match
+                                              plantuml-indent-regexp-arrow-1
+                                              (current-line-string))
+                                             (match-string-no-properties
+                                              0
+                                              (current-line-string)))
+                                   (current-line-string))) 0)
+                 (setq cur-indent var-indent
+                       not-indented nil))
+                ((bobp) (setq not-indented nil))))))
       (if cur-indent
           (indent-line-to cur-indent)
-        (indent-line-to 0)))))  
+        (indent-line-to 0)))))
+
 
 ;;;###autoload
 (defun plantuml-mode ()
@@ -220,17 +229,6 @@ Shortcuts             Command Name
   (setq-local indent-line-function 'plantuml-indent-line)
   (setq font-lock-defaults '((plantuml-font-lock-keywords) nil t))
   (run-mode-hooks 'plantuml-mode-hook))
-
-
-
-
-
-
-
-  
-
-
-
 
 
 (provide 'plantuml-mode)
