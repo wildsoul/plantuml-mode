@@ -21,16 +21,18 @@
 ;; using a simple and intuitive language.
 
 ;;; HISTORY
-;; version 0.3 <2013-10-30 08:36:24> by wildsoul
+;; version 0.3, <2013-10-30 08:36:24> by wildsoul
 ;;  +  update regexp
-;;  +  add indent 
-;;
+;;  +  indent 
+;;  +  auto-complete
+;; 
 ;; version 0.2, 2010-09-20 Initialize the keywords from the -language output of plantuml.jar
 ;;                         instead of the hard-coded way.
 ;; version 0.1, 2010-08-25 First version
 
 
 (require 'thingatpt)
+(require 'auto-complete)
 
 (defgroup plantuml-mode nil
   "Major mode for editing plantuml file."
@@ -115,10 +117,15 @@
 
 (unless plantuml-kwdList
   (plantuml-init)
-  (defvar plantuml-types-regexp (concat "^\\s *\\(" (regexp-opt plantuml-types 'words) "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)"))
+  (defvar plantuml-types-regexp
+    (concat "^\\s *\\("
+            (regexp-opt plantuml-types 'words)
+        "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)"))
   
-  
-  (defvar plantuml-keywords-regexp (concat "^\\s *" (regexp-opt plantuml-keywords 'words) "\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\|as\\|then\\|if"))
+  (defvar plantuml-keywords-regexp
+    (concat "^\\s *"
+            (regexp-opt plantuml-keywords 'words)
+"\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\|as\\|then\\|if"))
 
   (defvar plantuml-builtins-regexp (regexp-opt plantuml-builtins 'words))
   (defvar plantuml-preprocessors-regexp (concat "^\\s *" (regexp-opt plantuml-preprocessors 'words)))
@@ -157,7 +164,6 @@
                 meat))
              (message "Making completion list...%s" "done")))))
 
-(add-to-list 'auto-mode-alist '("\\.plu$" . plantuml-mode))
 
 (defun plantuml-indent-line ()
   "Indent current line as plantuml code"
@@ -229,6 +235,27 @@
           (indent-line-to cur-indent)
         (indent-line-to 0)))))
 
+
+
+;;; auto-complete setup
+(defvar ac-source-plantuml-sources
+  (append
+   '((candidates . (lambda () (append plantuml-types
+                                      plantuml-keywords
+                                      plantuml-builtins
+                                      plantuml-preprocessors)))
+     (symbol . "s"))))
+(defun ac-plantuml-setup ()
+  "Add the nrepl completion source to the front of `ac-sources'.
+This affects only the current buffer."
+  (interactive)
+  (add-to-list 'ac-sources 'ac-source-plantuml-sources))
+
+
+
+;;; setup 
+(add-hook 'plantuml-mode-hook 'ac-plantuml-setup)
+(add-to-list 'auto-mode-alist '("\\.plu$" . plantuml-mode))
 
 
 ;;;###autoload

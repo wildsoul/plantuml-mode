@@ -4,10 +4,12 @@
   
   + fix regexp 
   + append keywords
-  + add indent     
+  + indent     
     support if, endif, note, end note
+  + auto-complete
     
 ** TODO-LIST
   + +plantuml-line-indent+
   + +fixbugs for plantuml indentation+
+  + highlight indent 
     
