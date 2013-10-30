@@ -1,14 +1,23 @@
-;; plantuml-mode.el -- Major mode for plantuml
-;; Author: Zhang Weize (zwz), wildsoul
-;; Keywords: uml ascii
+;;; plantuml-mode.el --- Major mode for plantuml
+;;; -*- coding: utf-8 -*-
+;; Filename: plantuml-mode.el
+;; Description: This is a major mode for plantuml
+;; Author: Zhang Weize (zwz)
+;;         wildsoul
+;; Maintainer: wildsoul
+;; Copyright (C) 2010-2013 wildsoul
+;; Version: 0.3
+;; Package-Requires: ((auto-complete))
+;; URL: https://github.com/wildsoul/plantuml-mode
+;; Keywords: uml, ascii
+;; Compatibility: 
 ;; 
-;; You can redistribute this program and/or modify it under the terms
-;; of the GNU General Public License as published by the Free Software
-;; Foundation; either version 2, or (at your option) any later
-;; version.
-
-;;; DESCRIPTION
-
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: 
+;; 
+;;
 ;; A major mode for plantuml, see: http://plantuml.sourceforge.net/
 ;; Plantuml is an open-source tool in java that allows to quickly write :
 ;;     - sequence diagram,
@@ -19,17 +28,45 @@
 ;;     - state diagram
 ;;     - object diagram
 ;; using a simple and intuitive language.
-
-;;; HISTORY
-;; version 0.3, <2013-10-30 08:36:24> by wildsoul
-;;  +  update regexp
-;;  +  indent 
-;;  +  auto-complete
+;;
+;; to install:
+;; (require 'plantuml-mode)
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; version 0.2, 2010-09-20 Initialize the keywords from the -language output of plantuml.jar
-;;                         instead of the hard-coded way.
-;; version 0.1, 2010-08-25 First version
-
+;;; Change Log:
+;; 
+;; version 0.3, 2013-10-30 wildsoul
+;;  Update regexp
+;;  Indent enabled
+;;  Auto-complete enabled
+;; 
+;; version 0.2, 2010-09-20
+;;   Initialize the keywords from the -language output of plantuml.jar
+;;   instead of the hard-coded way.
+;; version 0.1, 2010-08-25
+;;   First version
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
 
 (require 'thingatpt)
 (require 'auto-complete)
@@ -279,3 +316,7 @@ Shortcuts             Command Name
 
 
 (provide 'plantuml-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; plantuml-mode.el ends here
