@@ -2,5 +2,7 @@
   + update regexp 
   + add indent 
 ** TODO-LIST
-*** DONE plantuml-mode-line-indentation
-*** TODO fixbugs in plantuml indentation   
+  + plantuml-mode-line-indentation
+  + fixbugs for plantuml indentation 
+
+
