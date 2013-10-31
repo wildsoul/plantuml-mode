@@ -79,8 +79,8 @@
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
-(setq plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\|}\\)")
-(setq plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:.*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\|\\(?:class\\|enum\\)\s+.*{\\)")
+(defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\|}\\)")
+(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:.*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\|\\(?:class\\|enum\\)\s+.*{\\)")
 (defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
 (defvar plantuml-indent-regexp-arrow-1 "\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
 (defvar plantuml-indent-regexp-arrow-2 "^\s*.+\s+\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
@@ -154,14 +154,14 @@
 
 (unless plantuml-kwdList
   (plantuml-init)
-  (setq plantuml-types-regexp
+  (defvar plantuml-types-regexp
     (concat "^\\s *\\("
             (regexp-opt plantuml-types 'words)
             "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\
 \\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\
 \\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)" ))
   
-  (setq plantuml-keywords-regexp
+  (defvar plantuml-keywords-regexp
     (concat "^\\s *"
             (regexp-opt plantuml-keywords 'words)
 "\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\
