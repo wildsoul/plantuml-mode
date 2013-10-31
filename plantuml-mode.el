@@ -258,7 +258,7 @@
                       (while var-flag
                         (incf var-count)
                         (forward-line -1)
-                        (cond ((bobp) (setq flag nil))
+                        (cond ((bobp) (setq var-flag nil))
                               ((looking-at plantuml-indent-regexp-arrow) nil)
                               ((looking-at "^\s+$") nil)
                               ((looking-at plantuml-indent-regexp-end) nil)
