@@ -79,8 +79,8 @@
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
 (defvar plantuml-mode-map nil "Keymap for plantuml-mode")
-(defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\)")
-(defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:.*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)")
+(setq plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\|}\\)")
+(setq plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:.*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\|\\(?:class\\|enum\\)\s+.*{\\)")
 (defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
 (defvar plantuml-indent-regexp-arrow-1 "\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
 (defvar plantuml-indent-regexp-arrow-2 "^\s*.+\s+\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
@@ -157,12 +157,16 @@
   (defvar plantuml-types-regexp
     (concat "^\\s *\\("
             (regexp-opt plantuml-types 'words)
-        "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)"))
+            "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\
+\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\)\\)\\>\\|\
+\\<\\(\\(left\\|center\\|right\\)\s+\\(header\\|footer\\)\\)\\>\\)" ))
   
-  (defvar plantuml-keywords-regexp
+  (setq plantuml-keywords-regexp
     (concat "^\\s *"
             (regexp-opt plantuml-keywords 'words)
-"\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\|as\\|then\\|if"))
+"\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\
+\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\
+\\(?:>\\||>\\|\\*\\|o\\)\\|as\\|then\\|if"))
 
   (defvar plantuml-builtins-regexp (regexp-opt plantuml-builtins 'words))
   (defvar plantuml-preprocessors-regexp (concat "^\\s *" (regexp-opt plantuml-preprocessors 'words)))
@@ -176,30 +180,6 @@
   (mapc (lambda (x) (puthash x t plantuml-kwdList))
        (append plantuml-types plantuml-keywords plantuml-builtins plantuml-preprocessors))
   (put 'plantuml-kwdList 'risky-local-variable t))
-
-(defun plantuml-complete-symbol ()
-  "Perform keyword completion on word before cursor."
-  (interactive)
-  (let ((posEnd (point))
-        (meat (thing-at-point 'symbol))
-        maxMatchResult)
-
-    (when (not meat) (setq meat ""))
-
-    (setq maxMatchResult (try-completion meat plantuml-kwdList))
-    (cond ((eq maxMatchResult t))
-          ((null maxMatchResult)
-           (message "Can't find completion for \"%s\"" meat)
-           (ding))
-          ((not (string= meat maxMatchResult))
-           (delete-region (- posEnd (length meat)) posEnd)
-           (insert maxMatchResult))
-          (t (message "Making completion list...")
-             (with-output-to-temp-buffer "*Completions*"
-               (display-completion-list
-                (all-completions meat plantuml-kwdList)
-                meat))
-             (message "Making completion list...%s" "done")))))
 
 
 (defun plantuml-indent-line ()
@@ -313,6 +293,29 @@ Shortcuts             Command Name
   (setq-local indent-line-function 'plantuml-indent-line)
   (setq font-lock-defaults '((plantuml-font-lock-keywords) nil t))
   (run-mode-hooks 'plantuml-mode-hook))
+
+
+(defun plantuml-complete-symbol ()
+  "Perform keyword completion on word before cursor."
+  (interactive)
+  (let ((posEnd (point))
+        (meat (thing-at-point 'symbol))
+        maxMatchResult)
+    (when (not meat) (setq meat ""))
+    (setq maxMatchResult (try-completion meat plantuml-kwdList))
+    (cond ((eq maxMatchResult t))
+          ((null maxMatchResult)
+           (message "Can't find completion for \"%s\"" meat)
+           (ding))
+          ((not (string= meat maxMatchResult))
+           (delete-region (- posEnd (length meat)) posEnd)
+           (insert maxMatchResult))
+          (t (message "Making completion list...")
+             (with-output-to-temp-buffer "*Completions*"
+               (display-completion-list
+                (all-completions meat plantuml-kwdList)
+                meat))
+             (message "Making completion list...%s" "done")))))
 
 
 (provide 'plantuml-mode)
