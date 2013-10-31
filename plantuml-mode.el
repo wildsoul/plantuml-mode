@@ -154,7 +154,7 @@
 
 (unless plantuml-kwdList
   (plantuml-init)
-  (defvar plantuml-types-regexp
+  (setq plantuml-types-regexp
     (concat "^\\s *\\("
             (regexp-opt plantuml-types 'words)
             "\\|\\<\\(note\s+over\\|\\(?:end\s+note\\|note\s+\\(\\(?:\
@@ -166,7 +166,7 @@
             (regexp-opt plantuml-keywords 'words)
 "\\|\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\
 \\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\
-\\(?:>\\||>\\|\\*\\|o\\)\\|as\\|then\\|if"))
+\\(?:>\\||>\\|\\*\\|o\\)\\|--"))
 
   (defvar plantuml-builtins-regexp (regexp-opt plantuml-builtins 'words))
   (defvar plantuml-preprocessors-regexp (concat "^\\s *" (regexp-opt plantuml-preprocessors 'words)))
