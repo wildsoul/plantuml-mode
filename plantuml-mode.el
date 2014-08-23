@@ -112,14 +112,24 @@
   (unless (file-exists-p plantuml-jar-path)
     (error "Could not find plantuml.jar at %s" plantuml-jar-path)))
 
+(defun plantuml--create-command (command-args)
+  (concat "java -jar "
+	  (shell-quote-argument plantuml-jar-path)
+	  " "
+	  command-args))
+
+(defun plantuml-generate-image ()
+  "Generates image out of current buffer."
+  (interactive)
+  (plantuml--check-jar)
+  (shell-command (plantuml--create-command (buffer-name))))
+
 ;;; font-lock
 (defun plantuml-init ()
   "Initialize the keywords or builtins from the cmdline language output"
   (plantuml--check-jar)
   (with-temp-buffer
-    (shell-command (concat "java -jar "
-                           (shell-quote-argument plantuml-jar-path)
-                           " -language") (current-buffer))
+    (shell-command (plantuml--create-command "-language") (current-buffer))
     (goto-char (point-min))
     (let ((found (search-forward ";" nil nil))
           (word "")
