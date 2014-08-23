@@ -107,11 +107,15 @@
 ;; keyword completion
 (defvar plantuml-kwdList nil "plantuml keywords.")
 
+(defun plantuml--check-jar ()
+  "Checks whether `plantuml-jar-path' exists."
+  (unless (file-exists-p plantuml-jar-path)
+    (error "Could not find plantuml.jar at %s" plantuml-jar-path)))
+
 ;;; font-lock
 (defun plantuml-init ()
   "Initialize the keywords or builtins from the cmdline language output"
-  (unless (file-exists-p plantuml-jar-path)
-    (error "Could not find plantuml.jar at %s" plantuml-jar-path))
+  (plantuml--check-jar)
   (with-temp-buffer
     (shell-command (concat "java -jar "
                            (shell-quote-argument plantuml-jar-path)
