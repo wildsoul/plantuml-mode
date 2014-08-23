@@ -75,10 +75,31 @@
   "Major mode for editing plantuml file."
   :group 'languages)
 
+(defun plantuml--check-jar ()
+  "Checks whether `plantuml-jar-path' exists."
+  (unless (file-exists-p plantuml-jar-path)
+    (error "Could not find plantuml.jar at %s" plantuml-jar-path)))
+
+(defun plantuml--create-command (command-args)
+  (concat "java -jar "
+	  (shell-quote-argument plantuml-jar-path)
+	  " "
+	  command-args))
+
+(defun plantuml-generate-image ()
+  "Generates image out of current buffer."
+  (interactive)
+  (plantuml--check-jar)
+  (shell-command (plantuml--create-command (buffer-name))))
+
 (defvar plantuml-jar-path nil )
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 (defvar plantuml-mode-version nil "plantuml-mode version string.")
-(defvar plantuml-mode-map nil "Keymap for plantuml-mode")
+(defvar plantuml-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") 'plantuml-generate-image)
+    map)
+  "Keymap for plantuml-mode")
 (defvar plantuml-indent-regexp-end "^[ \t]*\\(?:@enduml\\|endif\\|end\s+note\\|}\\)")
 (defvar plantuml-indent-regexp-start"^[ \t]*\\(?:@startuml\\|\\(?:.*\\)?\s*\\(?:[<>.*a-z-|]+\\)?\s*\\(?:\\[[a-zA-Z]+\\]\\)?\s+if\\|note\s+over\\|note\s+\\(\\(?:\\(?:buttom\\|left\\|right\\|top\\)\\)\\)\\(?:\s+of\\)?\\|\\(?:class\\|enum\\)\s+.*{\\)")
 (defvar plantuml-indent-regexp-arrow "^[ \t]*\\(?:\\(?:<\\|<|\\|o\\|\\*\\)\\(?:\\.\\|-\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:\\.\\|-\\)\\|\\(?:-\\|\\.\\)\\(?:down\\|up\\|left\\|right\\)?\\(?:-\\|\\.\\)\\(?:>\\||>\\|\\*\\|o\\)\\)")
@@ -106,23 +127,6 @@
 
 ;; keyword completion
 (defvar plantuml-kwdList nil "plantuml keywords.")
-
-(defun plantuml--check-jar ()
-  "Checks whether `plantuml-jar-path' exists."
-  (unless (file-exists-p plantuml-jar-path)
-    (error "Could not find plantuml.jar at %s" plantuml-jar-path)))
-
-(defun plantuml--create-command (command-args)
-  (concat "java -jar "
-	  (shell-quote-argument plantuml-jar-path)
-	  " "
-	  command-args))
-
-(defun plantuml-generate-image ()
-  "Generates image out of current buffer."
-  (interactive)
-  (plantuml--check-jar)
-  (shell-command (plantuml--create-command (buffer-name))))
 
 ;;; font-lock
 (defun plantuml-init ()
@@ -293,7 +297,8 @@ This affects only the current buffer."
 (defun plantuml-mode ()
   "Major mode for plantuml.
 Shortcuts             Command Name
-\\[plantuml-complete-symbol]      `plantuml-complete-symbol'"
+\\[plantuml-complete-symbol]      `plantuml-complete-symbol'
+\\[plantuml-generate-image]       `plantuml-generate-image'"
   (interactive)
   (kill-all-local-variables)
 
