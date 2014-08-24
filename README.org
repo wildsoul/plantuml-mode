@@ -1,12 +1,17 @@
 * README
-  integrating this project to my org-mode sounds good, i do not need to open either ida or eclipse. (thanks goodness)
-  but the problem is that i wrote some big uml graphs with more than hundred lines， it became difficult to figure out problems. In addition, to handle``if'' and ``endif'' loop is another troublesome topic. When i have many ``if'' and ``endif''， i always find that i can not figure out where i am. i upgrade this program for those people who has the similar exp. by the way thanks for zwz's work :)
+  Integrating this project to my org-mode sounds good, I do not need to open
+  either ida or eclipse. (thanks goodness) But the problem is that I wrote some
+  big uml graphs with more than hundred lines, it became difficult to figure out
+  problems. In addition, to handle ``if'' and ``endif'' loop is another
+  troublesome topic. When I have many ``if'' and ``endif'', I always find that I
+  can not figure out where I am. I upgrade this program for those people who has
+  the similar exp. By the way thanks for zwz's work :)
   
   + fix regexp 
   + append keywords
-  + indent     
-    support if, endif, note, end note
+  + indent support if, endif, note, end note
   + auto-complete
+  + generate image from current buffer (C-c C-c)
     
 ** TODO-LIST
   + +plantuml-line-indent+

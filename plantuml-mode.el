@@ -8,7 +8,7 @@
 ;; Author: Zhang Weize (zwz)
 ;;         wildsoul
 ;; Maintainer: wildsoul
-;; Version: 0.3
+;; Version: 0.4
 ;; Package-Requires: ((auto-complete "1.4"))
 ;; URL: https://github.com/wildsoul/plantuml-mode
 ;; Keywords: uml, ascii
